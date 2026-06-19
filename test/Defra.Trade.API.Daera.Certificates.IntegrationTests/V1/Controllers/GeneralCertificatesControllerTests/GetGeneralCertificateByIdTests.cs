@@ -10,10 +10,10 @@ using GeneralCertificate = Defra.Trade.API.Daera.Certificates.V1.Dtos.GeneralCer
 
 namespace Defra.Trade.API.Daera.Certificates.IntegrationTests.V1.Controllers.GeneralCertificatesControllerTests;
 
-public class GetGeneralCertificateByIdTests(DaeraCertificatesApplicationFactory<Startup> webApplicationFactory) : IClassFixture<DaeraCertificatesApplicationFactory<Startup>>
+public class GetGeneralCertificateByIdTests(DaeraCertificatesApplicationFactory<Program> webApplicationFactory) : IClassFixture<DaeraCertificatesApplicationFactory<Program>>
 {
     private readonly string _defaultClientIpAddress = "12.34.56.789";
-    private readonly DaeraCertificatesApplicationFactory<Startup> _webApplicationFactory = webApplicationFactory;
+    private readonly DaeraCertificatesApplicationFactory<Program> _webApplicationFactory = webApplicationFactory;
 
     [Fact]
     public async Task GetGeneralCertificateById_ValidId_Ok()

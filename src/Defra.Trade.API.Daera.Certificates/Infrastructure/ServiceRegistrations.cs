@@ -2,6 +2,7 @@
 // Licensed under the Open Government License v3.0.
 
 using System.Diagnostics.CodeAnalysis;
+using Defra.Trade.API.Daera.Certificates;
 using Defra.Trade.API.CertificatesStore.V1.ApiClient.Api;
 using Defra.Trade.API.CertificatesStore.V1.ApiClient.Client;
 using Defra.Trade.API.Daera.Certificates.Database.Context;
@@ -14,7 +15,7 @@ using Defra.Trade.API.Daera.Certificates.Logic.Services.Interfaces;
 using Defra.Trade.API.Daera.Certificates.Repository;
 using Defra.Trade.API.Daera.Certificates.Repository.Interfaces;
 using Defra.Trade.API.Daera.Certificates.V1.Examples;
-using Defra.Trade.Common.Security.Authentication.Interfaces;
+using Defra.Trade.Common.Security.Isolated.Authentication.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Filters;
@@ -40,9 +41,9 @@ public static class ServiceRegistrations
         services.AddOptions<InternalApimSettings>().Bind(appConfig);
 
         return services
-            .AddValidatorsFromAssemblyContaining<Startup>(lifetime: ServiceLifetime.Transient)
-            .AddAutoMapper(typeof(Startup), typeof(GeneralCertificateRetrievalMapper))
-            .AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Startup).Assembly))
+            .AddValidatorsFromAssembly(typeof(Program).Assembly, lifetime: ServiceLifetime.Transient)
+            .AddAutoMapper(typeof(Program).Assembly, typeof(GeneralCertificateRetrievalMapper).Assembly)
+            .AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly))
             .AddV1Registrations()
             .AddLogicRegistrations(configuration)
             .AddRepositoryRegistrations(configuration)

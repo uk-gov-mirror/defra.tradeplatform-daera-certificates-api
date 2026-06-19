@@ -1,0 +1,15 @@
+<Project>
+
+  <!--
+    AutoMapper 13.0.1 has a known high severity vulnerability (GHSA-rvv3-g6hj-g44x).
+    The next available stable release is 15.0.0, which introduced breaking API changes
+    (MapperConfiguration(Action<>) constructor removed, AddAutoMapper overloads changed).
+    Migrating to AutoMapper 15.x requires significant code changes across the Logic and
+    Repository projects and is tracked separately.
+    Advisory: https://github.com/advisories/GHSA-rvv3-g6hj-g44x
+  -->
+  <ItemGroup>
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-rvv3-g6hj-g44x" />
+  </ItemGroup>
+
+</Project>
