@@ -43,6 +43,7 @@ resources:
 
 variables:
   APIName: Defra.Trade.API.Daera.Certificates
+  sqlServerNameLower: $[ lower(variables['sqlServerName']) ]
 
 extends:
   template: /templates/basic-webapp-deploy-pipeline.yaml@PipelineCommon
@@ -58,7 +59,7 @@ extends:
     sonarExclusionPaths: '**/*Defra.Trade.API.Daera.Certificates.Database/*.*'
     publishProject: '**/*API.Daera.Certificates.csproj'
     publishArguments: '--configuration Release --self-contained true --runtime win-x86'
-    connectionStrings: '[{"name": "sql_db", "value": "Server=tcp:$(sqlServerName),1433;Database=trade-daera-certificates;", "type": "SQLAzure", "slotSetting": false},{"name": "sql_db_ef", "value": "Server=tcp:$(sqlServerName),1433;Database=trade-daera-certificates;Authentication=Active Directory Managed Identity;", "type": "SQLAzure", "slotSetting": false},{"name": "sql_db_audit", "value": "Server=tcp:$(sqlServerName),1433;Database=trade-sci-request-store;", "type": "SQLAzure", "slotSetting": false}]'
+    connectionStrings: '[{"name": "sql_db", "value": "Server=tcp:$(sqlServerNameLower),1433;Database=trade-daera-certificates;", "type": "SQLAzure", "slotSetting": false},{"name": "sql_db_ef", "value": "Server=tcp:$(sqlServerNameLower),1433;Database=trade-daera-certificates;Authentication=Active Directory Managed Identity;", "type": "SQLAzure", "slotSetting": false},{"name": "sql_db_audit", "value": "Server=tcp:$(sqlServerNameLower),1433;Database=trade-sci-request-store;", "type": "SQLAzure", "slotSetting": false}]'
     setupMiUser: 'true'
     databaseName: 'trade-daera-certificates'
     appSettings: >-
