@@ -30,7 +30,7 @@ resources:
     - repository: PipelineCommon
       name: DEFRA-TRD/Defra.TRD.Pipeline.Common
       type: git
-      ref: master
+      ref: kk/privateEnsPointForSQL
   pipelines:
     - pipeline: INFRA
       source: Defra.Trade.API.Infra Trade Daera Certificates Api Ext
