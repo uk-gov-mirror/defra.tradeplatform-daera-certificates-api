@@ -21,7 +21,7 @@
 		<ItemGroup>
 			<PackageReference Include="Azure.Identity" Version="1.21.0" />
 			<PackageReference Include="Defra.Trade.API.CertificatesStore.V1.ApiClient" Version="2.5.0" />
-			<PackageReference Include="Defra.Trade.Common.Api" Version="4.0.0" />
+      <PackageReference Include="Defra.Trade.Common.Api" Version="4.0.0" ApiXmlDoc="$(NuGetPackageRoot)defra.trade.common.api\4.0.0\lib\net10.0\Defra.Trade.Common.Api.xml" />
 			<PackageReference Include="Defra.Trade.Common.Security.Isolated" Version="2.0.0" />
 			<PackageReference Include="Defra.Trade.ProtectiveMonitoring" Version="4.0.1" />
 			<PackageReference Include="FluentAssertions" Version="8.10.0" />
