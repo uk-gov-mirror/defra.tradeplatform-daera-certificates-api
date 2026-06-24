@@ -15,7 +15,9 @@ using Defra.Trade.API.Daera.Certificates.Logic.Services.Interfaces;
 using Defra.Trade.API.Daera.Certificates.Repository;
 using Defra.Trade.API.Daera.Certificates.Repository.Interfaces;
 using Defra.Trade.API.Daera.Certificates.V1.Examples;
+using Defra.Trade.API.Daera.Certificates.Infrastructure.Json;
 using Defra.Trade.Common.Security.Isolated.Authentication.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Filters;
@@ -74,6 +76,17 @@ public static class ServiceRegistrations
         services
             .AddHealthChecks()
             .AddDbContextCheck<DaeraCertificateDbContext>();
+
+        // System.Text.Json in .NET 10 cannot serialize System.Reflection.MethodBase, which
+        // is exposed via Exception.TargetSite. When a health check fails, the health
+        // controller in Defra.Trade.Common.Api returns the HealthReport through the MVC
+        // pipeline, triggering SystemTextJsonOutputFormatter with the full Exception object.
+        // Registering this converter replaces the built-in UnsupportedTypeConverter<MethodBase>
+        // and writes null instead of throwing NotSupportedException.
+        services.Configure<JsonOptions>(options =>
+        {
+            options.JsonSerializerOptions.Converters.Add(new MethodBaseJsonConverter());
+        });
 
         return services;
     }
