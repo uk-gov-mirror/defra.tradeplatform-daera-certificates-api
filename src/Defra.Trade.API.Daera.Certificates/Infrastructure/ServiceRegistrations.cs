@@ -15,6 +15,7 @@ using Defra.Trade.API.Daera.Certificates.Logic.Services.Interfaces;
 using Defra.Trade.API.Daera.Certificates.Repository;
 using Defra.Trade.API.Daera.Certificates.Repository.Interfaces;
 using Defra.Trade.API.Daera.Certificates.V1.Examples;
+using Defra.Trade.API.Daera.Certificates.Infrastructure.EF;
 using Defra.Trade.API.Daera.Certificates.Infrastructure.Json;
 using Defra.Trade.Common.Security.Isolated.Authentication.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -114,7 +115,9 @@ public static class ServiceRegistrations
         return services
             .AddScoped<ICertificatesStoreRepository, CertificatesStoreRepository>()
             .AddDbContext<DaeraCertificateDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("sql_db_ef")).UseLazyLoadingProxies());
+                options.UseSqlServer(configuration.GetConnectionString("sql_db_ef"))
+                       .UseLazyLoadingProxies()
+                       .AddInterceptors(new ManagedIdentityConnectionInterceptor()));
     }
 
     private static IServiceCollection AddSwaggerExamples(this IServiceCollection services)
