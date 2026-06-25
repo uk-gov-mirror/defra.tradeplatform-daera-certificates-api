@@ -11,11 +11,10 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 namespace Defra.Trade.API.Daera.Certificates.Infrastructure.EF;
 
 /// <summary>
-/// Acquires a Managed Identity access token and sets it on every SQL connection opened
-/// by EF Core, replacing the legacy <c>Authentication=ActiveDirectoryManagedIdentity</c>
-/// connection-string keyword that was removed from <c>Microsoft.Data.SqlClient</c> v6+.
-/// Uses <see cref="SqlConnection.AccessToken"/> (plain string) to avoid type-ambiguity
-/// between <c>Microsoft.Data.SqlClient</c> and <c>Microsoft.Data.SqlClient.Extensions.Abstractions</c>.
+/// Acquires a Managed Identity access token and sets it on every SQL connection opened by EF Core.
+/// The <c>Authentication=</c> keyword is stripped from the connection string at configuration time
+/// (see <c>AddRepositoryRegistrations</c>); this interceptor supplies the Entra ID bearer token
+/// via <see cref="SqlConnection.AccessToken"/> so SqlClient authenticates without needing a provider.
 /// </summary>
 [ExcludeFromCodeCoverage(Justification = "Infrastructure plumbing covered by integration tests.")]
 internal sealed class ManagedIdentityConnectionInterceptor : DbConnectionInterceptor
@@ -48,7 +47,6 @@ internal sealed class ManagedIdentityConnectionInterceptor : DbConnectionInterce
         if (connection is not SqlConnection sqlConnection)
             return;
 
-        StripAuthenticationKeyword(sqlConnection);
         var token = await Credential.GetTokenAsync(SqlTokenRequestContext, ct);
         sqlConnection.AccessToken = token.Token;
     }
@@ -58,20 +56,7 @@ internal sealed class ManagedIdentityConnectionInterceptor : DbConnectionInterce
         if (connection is not SqlConnection sqlConnection)
             return;
 
-        StripAuthenticationKeyword(sqlConnection);
         var token = Credential.GetToken(SqlTokenRequestContext, default);
         sqlConnection.AccessToken = token.Token;
-    }
-
-    private static void StripAuthenticationKeyword(SqlConnection sqlConnection)
-    {
-        // SqlClient v6+ removed the built-in provider for Authentication=ActiveDirectoryManagedIdentity.
-        // Remove the keyword so SqlClient does not attempt a (missing) provider lookup.
-        if (!sqlConnection.ConnectionString.Contains("Authentication=", StringComparison.OrdinalIgnoreCase))
-            return;
-
-        var builder = new SqlConnectionStringBuilder(sqlConnection.ConnectionString);
-        builder.Remove("Authentication");
-        sqlConnection.ConnectionString = builder.ConnectionString;
     }
 }

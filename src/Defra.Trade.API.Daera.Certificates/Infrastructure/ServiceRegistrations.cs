@@ -112,10 +112,18 @@ public static class ServiceRegistrations
 
     private static IServiceCollection AddRepositoryRegistrations(this IServiceCollection services, IConfiguration configuration)
     {
+        // Strip the Authentication= keyword before passing the connection string to EF Core.
+        // SqlClient v7 resolves connection-pool options before ConnectionOpening fires, so the
+        // keyword must be absent at UseSqlServer() time, not patched later in the interceptor.
+        // The interceptor then supplies the Entra ID token via SqlConnection.AccessToken instead.
+        var rawConnectionString = configuration.GetConnectionString("sql_db_ef") ?? string.Empty;
+        var csb = new System.Data.Common.DbConnectionStringBuilder { ConnectionString = rawConnectionString };
+        csb.Remove("Authentication");
+
         return services
             .AddScoped<ICertificatesStoreRepository, CertificatesStoreRepository>()
             .AddDbContext<DaeraCertificateDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("sql_db_ef"))
+                options.UseSqlServer(csb.ConnectionString)
                        .UseLazyLoadingProxies()
                        .AddInterceptors(new ManagedIdentityConnectionInterceptor()));
     }
