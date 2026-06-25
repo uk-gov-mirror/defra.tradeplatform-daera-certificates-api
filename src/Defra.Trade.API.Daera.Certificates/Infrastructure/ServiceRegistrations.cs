@@ -77,15 +77,14 @@ public static class ServiceRegistrations
             .AddHealthChecks()
             .AddDbContextCheck<DaeraCertificateDbContext>();
 
-        // System.Text.Json in .NET 10 cannot serialize System.Reflection.MethodBase, which
-        // is exposed via Exception.TargetSite. When a health check fails, the health
-        // controller in Defra.Trade.Common.Api returns the HealthReport through the MVC
-        // pipeline, triggering SystemTextJsonOutputFormatter with the full Exception object.
-        // Registering this converter replaces the built-in UnsupportedTypeConverter<MethodBase>
-        // and writes null instead of throwing NotSupportedException.
+        // System.Text.Json in .NET 10 pre-registers UnsupportedTypeConverter<MethodBase> in
+        // JsonSerializerOptions.Converters. Using Add() appends after it, so the unsupported
+        // converter wins. Insert(0, ...) ensures our converter is checked first.
+        // CanConvert is overridden to cover all MethodBase subtypes (e.g. RuntimeMethodInfo)
+        // because Exception.TargetSite is never the abstract MethodBase at runtime.
         services.Configure<JsonOptions>(options =>
         {
-            options.JsonSerializerOptions.Converters.Add(new MethodBaseJsonConverter());
+            options.JsonSerializerOptions.Converters.Insert(0, new MethodBaseJsonConverter());
         });
 
         return services;
