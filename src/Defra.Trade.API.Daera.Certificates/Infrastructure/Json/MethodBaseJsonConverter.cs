@@ -16,12 +16,6 @@ namespace Defra.Trade.API.Daera.Certificates.Infrastructure.Json;
 /// </summary>
 internal sealed class MethodBaseJsonConverter : JsonConverter<MethodBase>
 {
-    // The default CanConvert only matches the exact type (typeof(MethodBase)).
-    // At runtime, Exception.TargetSite is always a concrete subtype such as
-    // RuntimeMethodInfo or RuntimeConstructorInfo, so we must match any derived type.
-    public override bool CanConvert(Type typeToConvert)
-        => typeof(MethodBase).IsAssignableFrom(typeToConvert);
-
     public override MethodBase? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         => null;
 

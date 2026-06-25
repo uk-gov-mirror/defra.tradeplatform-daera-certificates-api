@@ -2,7 +2,6 @@
 // Licensed under the Open Government License v3.0.
 
 using System.Diagnostics.CodeAnalysis;
-using Defra.Trade.API.Daera.Certificates;
 using Defra.Trade.API.CertificatesStore.V1.ApiClient.Api;
 using Defra.Trade.API.CertificatesStore.V1.ApiClient.Client;
 using Defra.Trade.API.Daera.Certificates.Database.Context;
@@ -15,10 +14,7 @@ using Defra.Trade.API.Daera.Certificates.Logic.Services.Interfaces;
 using Defra.Trade.API.Daera.Certificates.Repository;
 using Defra.Trade.API.Daera.Certificates.Repository.Interfaces;
 using Defra.Trade.API.Daera.Certificates.V1.Examples;
-using Defra.Trade.API.Daera.Certificates.Infrastructure.EF;
-using Defra.Trade.API.Daera.Certificates.Infrastructure.Json;
 using Defra.Trade.Common.Security.Isolated.Authentication.Interfaces;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Filters;
@@ -78,16 +74,6 @@ public static class ServiceRegistrations
             .AddHealthChecks()
             .AddDbContextCheck<DaeraCertificateDbContext>();
 
-        // System.Text.Json in .NET 10 pre-registers UnsupportedTypeConverter<MethodBase> in
-        // JsonSerializerOptions.Converters. Using Add() appends after it, so the unsupported
-        // converter wins. Insert(0, ...) ensures our converter is checked first.
-        // CanConvert is overridden to cover all MethodBase subtypes (e.g. RuntimeMethodInfo)
-        // because Exception.TargetSite is never the abstract MethodBase at runtime.
-        services.Configure<JsonOptions>(options =>
-        {
-            options.JsonSerializerOptions.Converters.Insert(0, new MethodBaseJsonConverter());
-        });
-
         return services;
     }
 
@@ -112,22 +98,10 @@ public static class ServiceRegistrations
 
     private static IServiceCollection AddRepositoryRegistrations(this IServiceCollection services, IConfiguration configuration)
     {
-        // Strip the Authentication= keyword before passing the connection string to EF Core.
-        // SqlClient v7 resolves connection-pool options before ConnectionOpening fires, so the
-        // keyword must be absent at UseSqlServer() time, not patched later in the interceptor.
-        // The interceptor then supplies the Entra ID token via SqlConnection.AccessToken instead.
-        // NOTE: Must use SqlConnectionStringBuilder (not the generic DbConnectionStringBuilder)
-        // because the base class does not recognise SQL Server-specific keywords and Remove() is a no-op.
-        var rawConnectionString = configuration.GetConnectionString("sql_db_ef") ?? string.Empty;
-        var csb = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder(rawConnectionString);
-        csb.Remove("Authentication");
-
         return services
             .AddScoped<ICertificatesStoreRepository, CertificatesStoreRepository>()
             .AddDbContext<DaeraCertificateDbContext>(options =>
-                options.UseSqlServer(csb.ConnectionString)
-                       .UseLazyLoadingProxies()
-                       .AddInterceptors(new ManagedIdentityConnectionInterceptor()));
+                options.UseSqlServer(configuration.GetConnectionString("sql_db_ef")).UseLazyLoadingProxies());
     }
 
     private static IServiceCollection AddSwaggerExamples(this IServiceCollection services)
