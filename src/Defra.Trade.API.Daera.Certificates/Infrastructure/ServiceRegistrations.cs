@@ -116,8 +116,10 @@ public static class ServiceRegistrations
         // SqlClient v7 resolves connection-pool options before ConnectionOpening fires, so the
         // keyword must be absent at UseSqlServer() time, not patched later in the interceptor.
         // The interceptor then supplies the Entra ID token via SqlConnection.AccessToken instead.
+        // NOTE: Must use SqlConnectionStringBuilder (not the generic DbConnectionStringBuilder)
+        // because the base class does not recognise SQL Server-specific keywords and Remove() is a no-op.
         var rawConnectionString = configuration.GetConnectionString("sql_db_ef") ?? string.Empty;
-        var csb = new System.Data.Common.DbConnectionStringBuilder { ConnectionString = rawConnectionString };
+        var csb = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder(rawConnectionString);
         csb.Remove("Authentication");
 
         return services
