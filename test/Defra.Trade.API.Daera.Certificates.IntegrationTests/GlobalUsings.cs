@@ -18,5 +18,6 @@ global using Microsoft.AspNetCore.Mvc.Testing;
 global using Microsoft.AspNetCore.TestHost;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.Hosting;
+global using Defra.Trade.API.Daera.Certificates;
 global using Moq;
 global using Xunit;

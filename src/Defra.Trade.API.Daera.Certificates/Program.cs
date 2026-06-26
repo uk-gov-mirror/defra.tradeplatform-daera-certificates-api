@@ -3,38 +3,53 @@
 
 using System.Diagnostics.CodeAnalysis;
 using Defra.Trade.API.Daera.Certificates.Infrastructure;
+using Defra.Trade.API.Daera.Certificates.Logic.Extensions;
+using Defra.Trade.Common.Api.Infrastructure;
 using Defra.Trade.Common.AppConfig;
-using Microsoft.Extensions.Hosting;
+using Defra.Trade.Common.ExternalApi.ApimIdentity;
+using Defra.Trade.Common.ExternalApi.Auditing;
+using Defra.Trade.Common.Security.Isolated.Authentication.Infrastructure;
+using Defra.Trade.Common.Sql.Infrastructure;
 
 namespace Defra.Trade.API.Daera.Certificates;
 
 /// <summary>
-/// Application program file.
+/// Application entry point.
 /// </summary>
-public static class Program
+[ExcludeFromCodeCoverage(Justification = "Process entry point covered by end-to-end tests.")]
+public class Program
 {
     /// <summary>
-    /// Application main class.
+    /// Application main entry point.
     /// </summary>
     /// <param name="args">Args</param>
-    [ExcludeFromCodeCoverage(Justification = "Process entry point covered by end-to-end tests.")]
     public static void Main(string[] args)
     {
-        CreateHostBuilder(args).Build().Run();
-    }
+        var builder = WebApplication.CreateBuilder(args);
 
-    private static IHostBuilder CreateHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
-            .ConfigureAppConfiguration(config =>
-                {
-                    config.ConfigureTradeAppConfiguration(cfg =>
-                    {
-                        cfg.UseKeyVaultSecrets = true;
-                        cfg.RefreshKeys.Add($"{ExtApiAppConfig.AppConfigSettingsName}:{ExtApiAppConfig.RefreshKey}");
-                    });
-                })
-            .ConfigureWebHostDefaults(webBuilder =>
-            {
-                webBuilder.UseStartup<Startup>();
-            });
+        builder.Configuration.ConfigureTradeAppConfiguration(cfg =>
+        {
+            cfg.UseKeyVaultSecrets = true;
+            cfg.RefreshKeys.Add($"{ExtApiAppConfig.AppConfigSettingsName}:{ExtApiAppConfig.RefreshKey}");
+        });
+
+        builder.Services.AddTradeApi(builder.Configuration);
+        builder.Services.AddTradeExternalApimIdentity(builder.Configuration);
+        builder.Services.AddTradeExternalAuditing(builder.Configuration);
+        builder.Services.AddApimAuthentication(builder.Configuration.GetSection(InternalApimSettings.SectionName));
+        builder.Services.AddTradeSql(builder.Configuration);
+        builder.Services.AddServiceRegistrations(builder.Configuration);
+
+        var app = builder.Build();
+
+        app.Logger.LogStartup(
+            app.Environment.EnvironmentName,
+            app.Environment.ApplicationName,
+            app.Environment.ContentRootPath);
+
+        app.UseTradeExternalAuditing();
+        app.UseTradeApp(app.Environment);
+
+        app.Run();
+    }
 }

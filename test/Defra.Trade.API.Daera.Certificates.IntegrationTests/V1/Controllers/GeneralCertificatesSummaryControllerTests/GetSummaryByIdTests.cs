@@ -11,10 +11,10 @@ using GeneralCertificateSummary = Defra.Trade.API.Daera.Certificates.V1.Dtos.Gen
 
 namespace Defra.Trade.API.Daera.Certificates.IntegrationTests.V1.Controllers.GeneralCertificatesSummaryControllerTests;
 
-public class GetSummaryByIdTests(DaeraCertificatesApplicationFactory<Startup> webApplicationFactory) : IClassFixture<DaeraCertificatesApplicationFactory<Startup>>
+public class GetSummaryByIdTests(DaeraCertificatesApplicationFactory<Program> webApplicationFactory) : IClassFixture<DaeraCertificatesApplicationFactory<Program>>
 {
     private readonly string _defaultClientIpAddress = "12.34.56.789";
-    private readonly DaeraCertificatesApplicationFactory<Startup> _webApplicationFactory = webApplicationFactory;
+    private readonly DaeraCertificatesApplicationFactory<Program> _webApplicationFactory = webApplicationFactory;
 
     [Fact]
     public async Task GetSummaryById_KnownIdWithSingleDocument_Ok()

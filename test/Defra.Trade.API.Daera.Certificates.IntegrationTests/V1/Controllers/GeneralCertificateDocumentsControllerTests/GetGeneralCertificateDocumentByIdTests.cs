@@ -10,10 +10,10 @@ using Microsoft.AspNetCore.Http;
 
 namespace Defra.Trade.API.Daera.Certificates.IntegrationTests.V1.Controllers.GeneralCertificateDocumentsControllerTests;
 
-public class GetGeneralCertificateDocumentByIdTests(DaeraCertificatesApplicationFactory<Startup> webApplicationFactory) : IClassFixture<DaeraCertificatesApplicationFactory<Startup>>
+public class GetGeneralCertificateDocumentByIdTests(DaeraCertificatesApplicationFactory<Program> webApplicationFactory) : IClassFixture<DaeraCertificatesApplicationFactory<Program>>
 {
     private readonly string _defaultClientIpAddress = "12.34.56.789";
-    private readonly DaeraCertificatesApplicationFactory<Startup> _webApplicationFactory = webApplicationFactory;
+    private readonly DaeraCertificatesApplicationFactory<Program> _webApplicationFactory = webApplicationFactory;
 
     [Fact]
     public async Task GetGeneralCertificateDocumentById_UnknownGcId_NotFound()
