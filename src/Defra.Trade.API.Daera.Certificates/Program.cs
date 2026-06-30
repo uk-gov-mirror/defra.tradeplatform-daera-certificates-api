@@ -8,7 +8,7 @@ using Defra.Trade.Common.Api.Infrastructure;
 using Defra.Trade.Common.AppConfig;
 using Defra.Trade.Common.ExternalApi.ApimIdentity;
 using Defra.Trade.Common.ExternalApi.Auditing;
-using Defra.Trade.Common.Security.Isolated.Authentication.Infrastructure;
+using Defra.Trade.Common.Security.Authentication.Infrastructure;
 using Defra.Trade.Common.Sql.Infrastructure;
 
 namespace Defra.Trade.API.Daera.Certificates;

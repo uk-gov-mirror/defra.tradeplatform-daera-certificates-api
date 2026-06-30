@@ -14,7 +14,7 @@ using Defra.Trade.API.Daera.Certificates.Logic.Services.Interfaces;
 using Defra.Trade.API.Daera.Certificates.Repository;
 using Defra.Trade.API.Daera.Certificates.Repository.Interfaces;
 using Defra.Trade.API.Daera.Certificates.V1.Examples;
-using Defra.Trade.Common.Security.Isolated.Authentication.Interfaces;
+using Defra.Trade.Common.Security.Authentication.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Filters;
