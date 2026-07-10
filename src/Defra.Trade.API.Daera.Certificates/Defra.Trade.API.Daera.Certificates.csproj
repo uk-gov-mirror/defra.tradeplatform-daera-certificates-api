@@ -1,12 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<SonarQubeTestProject>false</SonarQubeTestProject>
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<IncludeOpenAPIAnalyzers>true</IncludeOpenAPIAnalyzers>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
 
@@ -16,27 +15,26 @@
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <NoWarn>1701;1702;CS1591</NoWarn>
-        <DocumentationFile>obj\Debug\net8.0\Defra.Trade.Api.Daera.Certificates.xml</DocumentationFile>
+        <DocumentationFile>obj\Debug\net10.0\Defra.Trade.Api.Daera.Certificates.xml</DocumentationFile>
     </PropertyGroup>
   
-    <ItemGroup>
-	    <PackageReference Include="Azure.Identity" Version="1.12.1" />
-	    <PackageReference Include="Defra.Trade.API.CertificatesStore.V1.ApiClient" Version="2.5.0" />
-	    <PackageReference Include="Defra.Trade.Common.Security" Version="3.0.1" />
-	    <PackageReference Include="Defra.Trade.ProtectiveMonitoring" Version="3.0.0" />
-	    <PackageReference Include="FluentAssertions" Version="6.12.1" />
-	    <PackageReference Include="MediatR" Version="12.4.1" />
-	    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
+		<ItemGroup>
+			<PackageReference Include="Azure.Identity" Version="1.21.0" />
+			<PackageReference Include="Defra.Trade.API.CertificatesStore.V1.ApiClient" Version="2.5.0" />
+      <PackageReference Include="Defra.Trade.Common.Api" Version="4.0.0" ApiXmlDoc="$(NuGetPackageRoot)defra.trade.common.api\4.0.0\lib\net10.0\Defra.Trade.Common.Api.xml" />
+      <PackageReference Include="Defra.Trade.Common.Security" Version="4.0.3" />
+			<PackageReference Include="Defra.Trade.ProtectiveMonitoring" Version="4.0.1" />
+			<PackageReference Include="FluentAssertions" Version="8.10.0" />
+			<PackageReference Include="MediatR" Version="12.4.1" />
+			<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.9">
 		    <PrivateAssets>all</PrivateAssets>
 		    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	    </PackageReference>
-		<PackageReference Include="Defra.Trade.Common.Api" Version="3.0.2" GeneratePathProperty="true">
-        <ApiXmlDoc>$(PkgDefra_Trade_Common_Api)\lib\net8.0\Defra.Trade.Common.Api.xml</ApiXmlDoc>
-      </PackageReference>
-      <PackageReference Include="Defra.Trade.Common.ExternalApi" Version="3.0.1" />
-      <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
-      <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="8.0.8" />
-      <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
+      <PackageReference Include="Defra.Trade.Common.ExternalApi" Version="4.0.8" />
+      <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
+      <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="10.0.9" />
+      <PackageReference Include="RestSharp" Version="108.0.2" />
+      <PackageReference Include="System.Data.SqlClient" Version="4.9.1" />
     </ItemGroup>
   
     <ItemGroup>

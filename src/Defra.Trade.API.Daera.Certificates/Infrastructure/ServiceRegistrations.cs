@@ -40,9 +40,9 @@ public static class ServiceRegistrations
         services.AddOptions<InternalApimSettings>().Bind(appConfig);
 
         return services
-            .AddValidatorsFromAssemblyContaining<Startup>(lifetime: ServiceLifetime.Transient)
-            .AddAutoMapper(typeof(Startup), typeof(GeneralCertificateRetrievalMapper))
-            .AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Startup).Assembly))
+            .AddValidatorsFromAssembly(typeof(Program).Assembly, lifetime: ServiceLifetime.Transient)
+            .AddAutoMapper(typeof(Program).Assembly, typeof(GeneralCertificateRetrievalMapper).Assembly)
+            .AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly))
             .AddV1Registrations()
             .AddLogicRegistrations(configuration)
             .AddRepositoryRegistrations(configuration)

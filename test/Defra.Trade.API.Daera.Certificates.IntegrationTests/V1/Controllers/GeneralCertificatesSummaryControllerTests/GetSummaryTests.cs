@@ -12,10 +12,10 @@ using DbModels = Defra.Trade.API.Daera.Certificates.Database.Models;
 
 namespace Defra.Trade.API.Daera.Certificates.IntegrationTests.V1.Controllers.GeneralCertificatesSummaryControllerTests;
 
-public class GetSummaryTests(DaeraCertificatesApplicationFactory<Startup> webApplicationFactory) : IClassFixture<DaeraCertificatesApplicationFactory<Startup>>
+public class GetSummaryTests(DaeraCertificatesApplicationFactory<Program> webApplicationFactory) : IClassFixture<DaeraCertificatesApplicationFactory<Program>>
 {
     private readonly string _defaultClientIpAddress = "12.34.56.789";
-    private readonly DaeraCertificatesApplicationFactory<Startup> _webApplicationFactory = webApplicationFactory;
+    private readonly DaeraCertificatesApplicationFactory<Program> _webApplicationFactory = webApplicationFactory;
 
     [Fact]
     public async Task GetSummaries_NoQueryParametersRequest_Ok()
