@@ -59,7 +59,7 @@ extends:
     publishProject: '**/*API.Daera.Certificates.csproj'
     publishArguments: '--configuration Release --self-contained true --runtime win-x86'
     connectionStrings: '[{"name": "sql_db", "value": "Server=tcp:$(sqlServerName),1433;Database=trade-daera-certificates;", "type": "SQLAzure", "slotSetting": false},{"name": "sql_db_ef", "value": "Server=tcp:$(sqlServerName),1433;Database=trade-daera-certificates;Authentication=Active Directory Managed Identity;", "type": "SQLAzure", "slotSetting": false},{"name": "sql_db_audit", "value": "Server=tcp:$(sqlServerName),1433;Database=trade-sci-request-store;", "type": "SQLAzure", "slotSetting": false}]'
-    setupMiUser: 'true'
+    setupMiUser: 'false'
     databaseName: 'trade-daera-certificates'
     appSettings: >-
       -DaeraCertificatesSettings:BaseUrl "https://$(Environment.Name)-gateway.trade.azure.defra.cloud"
